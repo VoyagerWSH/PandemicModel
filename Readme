@@ -1,0 +1,18 @@
+Process for making the Visualisation:
+
+Step 1: Use the Places API from Google Maps to get data about the category of a Place
+Step 2: Make a Data Frame out of this data and convert to a JSON file(I think)
+Step 3: Feed the JSON File to the Map_with_Visualisation.html file and decide what aspects of the data frame it picks
+        up to decide the visualisation
+
+Map.html: If you open this file in your browser, you will get a plain google map that you can interact with
+Map_with_Visualisation.html: If you open this file in your browser, you will get a map with a earthquake visualisation,
+                             which will be changed to our visualisation when we figure out how to get our data into
+                             JSON/geoJSON/JSONP format
+Data.py: This file will be used to get data from Places API and to make a data frame from that data and change it into
+         a JSON/geoJSON/JSONP file.
+
+Note: You will be able to view the Google Maps in the html files only if it is approved for the API Key I generated
+      to use this Maps Javascript API from my Gmail account. To do that, when you open this .html file in browser,
+      let me know the name the the website that comes up(or the url of the file that opens up in the browser). I will
+      give access to that url from my account and then you will be able to view the google maps on the website
