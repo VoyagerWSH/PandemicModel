@@ -18,7 +18,9 @@
   </head>
 
   <body>
-
+    <p>
+      "Hello"
+    </p>
     <div id="map"></div>
     <!--this is the javascript part-->
     <script>
@@ -30,17 +32,17 @@
           mapTypeId: 'terrain'
         });
 
+        var uluru;
+        d3.csv("info.csv", function(data) {
+          for (var i = 0; i < data.length; i++) {
+            uluru = {lat: data[i].Lat, lng: data[i].Long};
+            //console.log(data[i].Lat, data[i].Long);
+          }
+        });
+        
+        var marker = new google.maps.Marker({position: uluru, map: map});
+        
       }
-
-      d3.csv("data.csv", function(data) {
-        for (var i = 0; i < data.length; i++) {
-          var latLng = new google.maps.LatLng(data[i].Lat,data[i].Long);
-          var marker = new google.maps.Marker({
-            position: latLng,
-            map: map
-          });
-        }
-      });
 
    </script>
    <!--this is the javascript part-->
