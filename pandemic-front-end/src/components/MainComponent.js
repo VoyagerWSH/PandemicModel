@@ -49,7 +49,7 @@ class Main extends Component {
             {/*<Route exact path="/menu" component={() => <Menu dishes={this.props.dishes} />} />
             <Route path="/menu/:dishId" component={DishWithId} />*/}
             <Route exact path="/about" component={() => <About leaders={this.props.leaders} />} />
-            <Route exact path="/team" component={() => <Team leaders={this.props.leaders} />} />
+            <Route exact path="/team" component={() => <Team/>} />
             <Route exact path="/simulator" component={Simulator} />
             <Route exact path="/developmentblog" component={DevelopmentBlog} />
             <Route exact path="/contactus" component={Contact} />

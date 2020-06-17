@@ -1,48 +1,99 @@
+
 import React from 'react';
-import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import image from './profile2.jpg'
+import {leaders} from './teamLeaders.js'
+import dotImage from './dots.PNG'
+import './TeamStyle.css'
 
-function RenderLeader({leader}){
-    return(
+function LeaderList(){
 
-        <div key={leader.id} className="col-12 mt-5">
-            <Media tag="li">
-                <Media left middle>
-                    <Media object src={leader.image} alt={leader.name} />
-                </Media>
-                <Media body className="ml-5">
-                    <Media heading>{leader.name}</Media>
-                    <p>{leader.designation}</p>
-                    <p>{leader.description}</p>
-                </Media>
-            </Media>
-        </div>
-    );
-}
+  var length = leaders.length;
+  console.log("Length: "+length)
 
-function Team(props) {
-    const leaders = props.leaders.map((leader) => {
-        return (
-            <div key={leader.id} className="col-12 m-1">
-                <RenderLeader leader={leader} />
-            </div>
+  
+  let counter = 0;
+  const leaderCards = leaders.map(leader => {
+      if(counter%2 == 0){
+        counter++;
+        return(
+          <TeamLeaderCardLeft name={leader.name} bio = {leader.bio}></TeamLeaderCardLeft>
         );
-    });
-
-    return(
-        <div className="container">
-            <div className="row row-content">
-                <div className="col-12">
-                    <h2>Team Composition</h2>
-                </div>
-                <div className="col-12">
-                    <Media list>
-                        {leaders}
-                    </Media>
-                </div>
-            </div>
-        </div>
-    );
+      }
+      else{
+        counter++;
+        return(
+          <TeamLeaderCardRight name={leader.name} bio = {leader.bio}></TeamLeaderCardRight>
+        );
+      }
+    }
+  );
+  return(<div class="LeaderList">{leaderCards}</div>);
 }
+
+function TeamLeaderCardLeft(props){
+  return(
+    <div align= "left" class="Card">
+        <img src={image} width="150px" height="150px" class="LeaderImage"></img>
+        <div class="Inner">
+          <h4 class="LeaderName">{props.name}</h4>
+          <p class="Text">
+            {props.bio}
+          </p>
+        </div>
+    </div>
+
+  );
+
+}
+
+function TeamLeaderCardRight(props){
+  return(
+    <div align= "left" class="Card">
+        <img src={image} width="150px" height="150px" class="LeaderImageRight"></img>
+        <div class="InnerRight">
+          <h4 class="LeaderNameRight">{props.name}</h4>
+          <p class="TextRgit">
+            {props.bio}
+          </p>
+        </div>
+    </div>
+
+  );
+
+}
+
+
+function SupervisorCard(props){
+  return(
+    <div align= "left" class="Card">
+        <img src={image} width="250px" height="250px" class="LeaderImage"></img>
+        <div class="Inner">
+          <h4 class="LeaderName">{props.name}</h4>
+          <p class="Text">
+            {props.bio}
+          </p>
+        </div>
+    </div>
+
+  );
+
+}
+
+function Team(){
+
+  return(
+    <>
+      <h1 class="header">Delineo Modeling Group Team</h1> 
+      <img src={dotImage} class = "DoteImage" ></img>
+      <h2 class="header2" >Reasearch Supervisor</h2>
+      <SupervisorCard name="Supervisor Name" bio = "Hello World" ></ SupervisorCard>
+      <img src={dotImage} class = "DoteImage" ></img>
+      <h2 class="header3" >Team Leaders</h2>
+      <LeaderList></LeaderList>
+    </>
+  );
+}
+
+
 
 export default Team;
