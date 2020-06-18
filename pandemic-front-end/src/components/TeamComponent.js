@@ -83,7 +83,7 @@ function Team(){
 
   return(
     <>
-      <h1 class="header">Delineo Modeling Group Team</h1> 
+      <h1 class="header">Meet The Team</h1> 
       <img src={dotImage} class = "DoteImage" ></img>
       <h2 class="header2" >Reasearch Supervisor</h2>
       <SupervisorCard name="Supervisor Name" bio = "Hello World" ></ SupervisorCard>
