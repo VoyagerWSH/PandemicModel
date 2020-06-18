@@ -5,7 +5,7 @@
   .Card {
     overflow: hidden;
     padding:20px;
-    border: 1px solid #707070;
+    border: 1px solid #ffffff;
     width: 85%;
     height: fit-content;
     margin-left: auto;
@@ -14,7 +14,7 @@
     box-shadow: 5px 10px 20px grey; 
     display: inline-block;
     box-sizing: border-box; 
-    margin-top: 40px;
+    margin-top: 35px;
     margin-bottom: 20px;
   }
   
@@ -78,9 +78,7 @@
   } 
   
   .header {
-    font-size: 30px;
-    margin-top: 3%;
-    font-weight: normal;
+    margin-top: 1%;
     margin-bottom: 0%;
   }
   
@@ -88,7 +86,7 @@
     float: left;
     margin-left: 8%;
     margin-right: auto;
-    margin-top: 2%;
+    margin-top: 1%;
     font-size: 25px;
     
   } 
@@ -102,7 +100,7 @@
   } 
   
   .DoteImage {
-    margin-top: 2%;
+    margin-top: 1%;
     display: block;
     margin-left: auto;
     margin-right: auto;

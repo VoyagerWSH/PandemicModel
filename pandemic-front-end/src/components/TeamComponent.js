@@ -3,6 +3,7 @@ import React from 'react';
 import image from './profile2.jpg'
 import {leaders} from './teamLeaders.js'
 import dotImage from './dots.PNG'
+//import dotImage from '/../../public/assets/images/about.JPG'
 import './TeamStyle.css'
 
 function LeaderList(){
@@ -83,7 +84,7 @@ function Team(){
 
   return(
     <>
-      <h1 class="header">Meet The Team</h1> 
+      <h3 class="header">Meet The Team</h3> 
       <img src={dotImage} class = "DoteImage" ></img>
       <h2 class="header2" >Reasearch Supervisor</h2>
       <SupervisorCard name="Supervisor Name" bio = "Hello World" ></ SupervisorCard>
