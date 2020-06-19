@@ -1,9 +1,3 @@
-var map;
-var infowindow; 
-var id;
-var location;
-var north_east;
-var south_west;
 
 function initAutocomplete() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -20,9 +14,12 @@ function initAutocomplete() {
     var input = document.getElementById('input');
     var autocomplete = new google.maps.places.Autocomplete(input);
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
-    var marker = new google.maps.Marker({
-        map: map
-    });
+
+    var place;
+    var id;
+    var location;
+    var north_east;
+    var south_west;
 
     // Set the data fields to return when the user selects a place.
     autocomplete.setFields(
@@ -31,13 +28,12 @@ function initAutocomplete() {
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
     autocomplete.addListener('place_changed', function () {
-        var place = autocomplete.getPlace();
+        place = autocomplete.getPlace();
         if (!place.geometry) {
             console.log("Returned place contains no geometry");
             return;
         }
         var bounds = new google.maps.LatLngBounds();
-        marker.setPosition(place.geometry.location);
 
         if (place.geometry.viewport) {
             bounds.union(place.geometry.viewport);
