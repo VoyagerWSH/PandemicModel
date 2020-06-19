@@ -27,7 +27,7 @@ function initAutocomplete() {
 
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
-    autocomplete.addListner('place_changed', function () {
+    autocomplete.addListener('place_changed', function () {
         place = autocomplete.getPlace();
         if (!place.geometry) {
             console.log("Returned place contains no geometry");
