@@ -1,42 +1,67 @@
-
-var input_city = 'Barnsdall';//this input should come from the dropdown in index.html select city
-
-// Initialize and add the map
-function initMap() {
-map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 2,
-    center: new google.maps.LatLng(2.8,-187.3), mapTypeId: 'roadmap'
-    });
-
-infowindow = new google.maps.InfoWindow();
-
-var request = {
-    query: input_city,
-    fields: ['name', 'formatted_address', 'geometry', 'place_id' , 'types'],
-};
-
-var service = new google.maps.places.PlacesService(map);
+var map;
+var infowindow; 
 var id;
 var location;
 var north_east;
 var south_west;
 
-service.findPlaceFromQuery(request, function(results, status) {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0; i < results.length; i++) {
-        location = results[i].geometry.location;
-        north_east = results[i].geometry.viewport.getNorthEast();//northeast bound
-        south_west = results[i].geometry.viewport.getSouthWest();//southwest bound
+function initAutocomplete() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+            lat: 48,
+            lng: 4
+        },
+        zoom: 4,
+        disableDefaultUI: true
+    });
+
+    infowindow = new google.maps.InfoWindow();
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('input');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+    var marker = new google.maps.Marker({
+        map: map
+    });
+
+    // Set the data fields to return when the user selects a place.
+    autocomplete.setFields(
+        ['name', 'formatted_address', 'geometry', 'place_id' , 'types']);
+
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    autocomplete.addListener('place_changed', function () {
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+        }
+        var bounds = new google.maps.LatLngBounds();
+        marker.setPosition(place.geometry.location);
+
+        if (place.geometry.viewport) {
+            bounds.union(place.geometry.viewport);
+        } else {
+            bounds.extend(place.geometry.location);
+        }
+        map.fitBounds(bounds);
+        id = place.place_id;
+        location = place.geometry.location;
+        north_east = place.geometry.viewport.getNorthEast();//northeast bound
+        south_west = place.geometry.viewport.getSouthWest();//southwest bound
+        console.log(id);//just for reference
         console.log(location.toString());//just for reference
         console.log(north_east.toString());//just for reference
         console.log(south_west.toString());//just for reference
-        createMarker(results[i]);
-      }
-    }
-});
+        createMarker(place);
+    });
 }
 
-function createMarker(place, place_type) {
+document.addEventListener("DOMContentLoaded", function (event) {
+    initAutocomplete();
+});
+
+function createMarker(place) {
     var marker = new google.maps.Marker({
       map: map,
       position: place.geometry.location
