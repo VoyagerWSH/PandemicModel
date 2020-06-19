@@ -49,13 +49,29 @@ function initAutocomplete() {
         console.log(location.toString());//just for reference
         console.log(north_east.toString());//just for reference
         console.log(south_west.toString());//just for reference
-        createMarker(place);
+        nearbySearch(place);
     });
 }
 
 document.addEventListener("DOMContentLoaded", function (event) {
     initAutocomplete();
 });
+
+function nearbySearch(place) {
+    var search = {
+        bounds: place.geometry.viewport,
+        types: ['lodging']
+      };
+    service = new google.maps.places.PlacesService(map);
+    service.nearbySearch(search, callback);
+    function callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+            }
+        }
+    }
+}
 
 function createMarker(place) {
     var marker = new google.maps.Marker({
