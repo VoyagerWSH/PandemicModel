@@ -20,7 +20,7 @@ function Footer(props) {
                         <address>
                             <i className="fa fa-phone fa-lg"></i>: 410-516-8775<br />
 		                    <i className="fa fa-envelope fa-lg"></i>: contactus@cs.jhu.edu<br />
-		                    <i className="fa fa-globe fa-lg"></i>: <a href="https://engineering.jhu.edu/fields-of-study/computer-science/">https://engineering.jhu.edu/fields-of-study/computer-science/</a>
+		                    <i className="fa fa-globe fa-lg"></i>: <a href="https://engineering.jhu.edu/fields-of-study/computer-science/" style={{ color: '#000' }}>https://engineering.jhu.edu/fields-of-study/computer-science/</a>
                         </address>
                     </div>
                 <div className="col-12 col-sm-4 align-self-center" style={{marginLeft:'-40px'}}>
