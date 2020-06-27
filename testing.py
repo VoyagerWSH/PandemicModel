@@ -6,9 +6,9 @@ import json
 overpass_url = "http://overpass-api.de/api/interpreter"
 overpass_query = """
 [out:json];
-(node["amenity"](36.5379,-96.2065,36.5820,-96.1129);
- way["amenity"](36.5379,-96.2065,36.5820,-96.1129);
- rel["amenity"](36.5379,-96.2065,36.5820,-96.1129);
+(node["amenity"](poly:"39.1905 -77.0238 39.3606 -77.0238 39.3606 -76.6496 39.1905 -76.6496");
+ way["amenity"](poly:"39.1905 -77.0238 39.3606 -77.0238 39.3606 -76.6496 39.1905 -76.6496");
+ rel["amenity"](poly:"39.1905 -77.0238 39.3606 -77.0238 39.3606 -76.6496 39.1905 -76.6496");
 );
 out center;
 """
@@ -31,10 +31,10 @@ for element in data['elements']:
 # Convert coordinates into numpy array
 X = np.array(coords)
 print(X)
-#plt.plot(X[:, 0], X[:, 1], 'o')
+plt.plot(X[:, 0], X[:, 1], 'o')
 
-#plt.title('Marketplaces in Barnsdall')
-#plt.xlabel('Longitude')
-#plt.ylabel('Latitude')
-#plt.axis('equal')
-#plt.show()
+plt.title('Amenities in Ellicott City')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.axis('equal')
+plt.show()
