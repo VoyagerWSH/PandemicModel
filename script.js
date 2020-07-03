@@ -88,24 +88,43 @@ function clearMarkers() {
 }
 
 function returnPolygon(result) {
-    const endpoint = 'https://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=json&addressdetails=1&limit=1&polygon_geojson=1';
-  
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            renderResponse(xhr.response);
+    console.log(result.name.toString());
+    const endpoint = 'https://nominatim.openstreetmap.org/search?q=' + result.name.toString() + '&format=json&addressdetails=1&limit=1&polygon_geojson=1';
+    fetch(endpoint, {cache: 'no-cache'}).then(response => {
+        if (response.ok) {
+          return response.json();
         }
-    }
-  
-    xhr.open('GET', endpoint);
-    xhr.send();
+        throw new Error('Request failed!');
+      }, networkError => {
+        console.log(networkError.message)
+      }).then(jsonResponse => {
+        renderResponse(jsonResponse);
+      })
 }
 
-const renderResponse = (result) => {
-    for (var i = 0; i < result.length; i++) {
-        console.log(result[i].geojson.coordinates.toString());
+const renderResponse = (location) => {
+    for (var i = 0; i < location.length; i++) {
+        /*
+         location is the result which looks something like:
+         [{"place_id":105581712,"licence":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+         "osm_type":"way","osm_id":90394480,"boundingbox":["52.5487473","52.5488481","-1.816513","-1.8163464"],
+         "lat":"52.5487921","lon":"-1.8164308339635031","display_name":"135, Pilkington Avenue, Sutton Coldfield, 
+         Birmingham, West Midlands Combined Authority, West Midlands, England, B72 1LH, United Kingdom",
+         "class":"building","type":"residential","importance":0.411,"address":{"house_number":"135","road":
+         "Pilkington Avenue","town":"Sutton Coldfield","city":"Birmingham","county":"West Midlands Combined Authority",
+         "state_district":"West Midlands","state":"England","postcode":"B72 1LH","country":"United Kingdom",
+         "country_code":"gb"},
+         "geojson":{"type":"Polygon","coordinates":[[[-1.816513,52.5487566],[-1.816434,52.5487473],[-1.816429,52.5487629],
+         [-1.8163717,52.5487561],[-1.8163464,52.5488346],[-1.8164599,52.5488481],[-1.8164685,52.5488213],
+         [-1.8164913,52.548824],[-1.816513,52.5487566]]]}}]
+
+         In this the "geojson" feature of the json file is the geojson object we have to read and return its polygon 
+         coordinates. The type of this can be polygon or Multipolygon, so be careful of that. If its a multipolygon, then
+         would probably have to return all polygon seperately.
+        */
+        for(var j = 0; j < location[i].geojson.coordinates.length; j++) {
+            console.log(location[i].geojson.coordinates.toString());//need to clean this up as it just 
+        }
     }
     
 }
