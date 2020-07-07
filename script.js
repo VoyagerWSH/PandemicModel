@@ -101,7 +101,29 @@ function returnPolygon(result) {
         renderResponse(jsonResponse);
       })
 }
-
+function PolygonInfo(result) {
+    //result parameter has string with bounding polygon coordinates
+    console.log(result.name.toString());
+    const overpass_url = 'http://overpass-api.de/api/interpreter?data=';
+    const overpass_query = '""[out:json];
+(node["amenity"](poly:"' + result.name.toString() + '");
+ way["amenity"](poly:"' + result.name.toString() + '");
+ rel["amenity"](poly:"' + result.name.toString() + '");
+);
+out center;
+""';
+    const real_url = overpass_url + overpass_query;
+    fetch(real_url, {cache: 'no-cache'}).then(response => {
+	    if (response.ok) {
+		return response.json();
+	    }
+	    throw new Error('Request failed!');
+	}, networkError => {
+	    console.log(networkError.message)
+	}).then(jsonResponse => {
+		renderResponse(jsonResponse);
+	    })
+}
 const renderResponse = (location) => {
     for (var i = 0; i < location.length; i++) {
         /*
