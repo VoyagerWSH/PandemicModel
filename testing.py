@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import requests
 import json
-overpass_url = "http://overpass-api.de/api/interpreter"
+overpass_url = "http://overpass-api.de/api/interpreter?data="
 overpass_query = """
 [out:json];
 (node["amenity"](poly:"39.1905 -77.0238 39.3606 -77.0238 39.3606 -76.6496 39.1905 -76.6496");
@@ -12,8 +12,8 @@ overpass_query = """
 );
 out center;
 """
-response = requests.get(overpass_url, 
-                        params={'data': overpass_query})
+overpass_url = overpass_url + overpass_query
+response = requests.get(overpass_url)
 data = response.json()
 for k,v in data.items():
   print(k,v)
