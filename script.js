@@ -101,7 +101,7 @@ function returnPolygon(result) {
         renderResponse(jsonResponse);
       })
 }
-function PolygonInfo(result) {
+function polygonInfo(result) {
     //result parameter has string with bounding polygon coordinates
     console.log(result.name.toString());
     const overpass_url = 'http://overpass-api.de/api/interpreter?data=';
