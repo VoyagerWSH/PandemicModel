@@ -87,50 +87,54 @@ function clearMarkers() {
     markers = [];
 }
 
-function returnPolygon(result) {
-    console.log(result.name.toString());
-    const endpoint = 'https://nominatim.openstreetmap.org/search?q=' + result.name.toString() + '&format=json&addressdetails=1&limit=1&polygon_geojson=1';
-    fetch(endpoint, {cache: 'no-cache'}).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Request failed!');
-      }, networkError => {
-        console.log(networkError.message)
-      }).then(jsonResponse => {
-        renderResponse(jsonResponse);
-      })
+function download(content, fileName, contentType) {
+  var a = document.createElement("a");
+  var file = new Blob([content], {type: contentType});
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
 }
+
+function returnPolygon(result) {
+    const endpoint = 'https://nominatim.openstreetmap.org/search?q=' + result.name + '&format=json&addressdetails=1&limit=1&polygon_geojson=1';
+    fetch(endpoint, {cache: 'no-cache'}).then(response =>
+      response.json()).then(data => {
+        console.log(data)
+        //construct string
+        var latlng_array = data[0].boundingbox.toString().split(',');
+        var latlng_bound = latlng_array[0] + ' ' + latlng_array[2] + ' ' + latlng_array[0] + ' ' + latlng_array[3] + ' ' + latlng_array[1] + ' ' + latlng_array[2] + ' ' + latlng_array[1] + ' ' + latlng_array[3];
+        console.log('Lat Long Bound =' + latlng_bound);
+        polygonInfo(latlng_bound);
+      }/*, networkError => {
+           console.log(networkError.message)
+       }).then(jsonResponse => {
+       	renderResponse(jsonResponse);
+      }*/);
+}
+
 function polygonInfo(result) {
     //result parameter has string with bounding polygon coordinates
-    console.log(result.name.toString());
     const overpass_url = 'http://overpass-api.de/api/interpreter?data=';
-    const overpass_query = '""[out:json];
-(node["amenity"](poly:"' + result.name.toString() + '");
- way["amenity"](poly:"' + result.name.toString() + '");
- rel["amenity"](poly:"' + result.name.toString() + '");
-);
-out center;
-""';
+    const overpass_query = '[out:json];(node["amenity"](poly:"' + result + '");way["amenity"](poly:"' + result + '");rel["amenity"](poly:"' + result + '"););out center;';
     const real_url = overpass_url + overpass_query;
-    fetch(real_url, {cache: 'no-cache'}).then(response => {
-	    if (response.ok) {
-		return response.json();
-	    }
-	    throw new Error('Request failed!');
-	}, networkError => {
-	    console.log(networkError.message)
-	}).then(jsonResponse => {
-		renderResponse(jsonResponse);
-	    })
-}
+    console.log('overpass url = ' + real_url);
+    console.log('fetching...');
+    fetch(real_url, {cache: 'no-cache'}).then(response => response.json()).then(data => {
+      console.log(data);
+      download(JSON.stringify(data), 'polygonInfo', '.txt');
+    }/*, networkError => {
+         console.log(networkError.message)
+     }).then(jsonResponse => {
+      renderResponse(jsonResponse);
+    }*/);
+
 const renderResponse = (location) => {
     for (var i = 0; i < location.length; i++) {
         /*
          location is the result which looks something like:
          [{"place_id":105581712,"licence":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
          "osm_type":"way","osm_id":90394480,"boundingbox":["52.5487473","52.5488481","-1.816513","-1.8163464"],
-         "lat":"52.5487921","lon":"-1.8164308339635031","display_name":"135, Pilkington Avenue, Sutton Coldfield, 
+         "lat":"52.5487921","lon":"-1.8164308339635031","display_name":"135, Pilkington Avenue, Sutton Coldfield,
          Birmingham, West Midlands Combined Authority, West Midlands, England, B72 1LH, United Kingdom",
          "class":"building","type":"residential","importance":0.411,"address":{"house_number":"135","road":
          "Pilkington Avenue","town":"Sutton Coldfield","city":"Birmingham","county":"West Midlands Combined Authority",
@@ -140,14 +144,14 @@ const renderResponse = (location) => {
          [-1.8163717,52.5487561],[-1.8163464,52.5488346],[-1.8164599,52.5488481],[-1.8164685,52.5488213],
          [-1.8164913,52.548824],[-1.816513,52.5487566]]]}}]
 
-         In this the "geojson" feature of the json file is the geojson object we have to read and return its polygon 
+         In this the "geojson" feature of the json file is the geojson object we have to read and return its polygon
          coordinates. The type of this can be polygon or Multipolygon, so be careful of that. If its a multipolygon, then
          would probably have to return all polygon seperately.
         */
         for(var j = 0; j < location[i].geojson.coordinates.length; j++) {
-            console.log(location[i].geojson.coordinates.toString());//need to clean this up as it just 
+            console.log(location[i].geojson.coordinates.toString());//need to clean this up as it just
         }
     }
-    
-}
 
+}
+}
