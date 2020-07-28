@@ -23,15 +23,13 @@ shinyUI(fluidPage(
                                inline = TRUE),
                                                                        
             submitButton("Submit"),
-                    )
-                ) 
-            )
-        )
-        
+                ), 
+
         mainPanel(
             tabsetPanel(type = "tabs", 
-                        tabPanel("Map By County", leafletOutput("countyPolygonMap")), 
-                        tabPanel("Map By State", leafletOutput("statePolygonMap"))
+                        tabPanel("County Level", plotlyOutput("countyPolygonMap")), 
+                        tabPanel("State Level", leafletOutput("statePolygonMap"))
             )
         )
-    )
+)))
+
