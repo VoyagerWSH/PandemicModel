@@ -1,13 +1,16 @@
 ## Date: 2020-07-20
 ## Developer: Kaihua Hou, Johns Hopkins University ECE & CS
-
 library(shiny)
+library(shinyWidgets)
 library(plotly)
 library(leaflet)
 
-shinyUI(fluidPage(
+ui <- fluidPage(
     
-    titlePanel("JHU COVID-19 Modeling Visualization Map"),
+    titlePanel("Johns Hopkins COVID-19 Modeling Visualization Map"),
+    setBackgroundImage(
+        src = "https://brand.jhu.edu/assets/uploads/sites/5/2014/06/university.logo_.small_.horizontal.blue_.jpg"
+    ),
     
     sidebarLayout(
         sidebarPanel(
@@ -23,14 +26,27 @@ shinyUI(fluidPage(
                                  "MA", "VA", "MI", "WA", "MN", "WV", 
                                  "MS", "WI", "WY"),
                                inline = TRUE),                       
-            submitButton("Submit")
-                ), 
-
+            actionButton("submit", "Submit (may take 30s to load)")
+        ), 
+        
         mainPanel(
             tabsetPanel(type = "tabs", 
-                        tabPanel("County Level", plotlyOutput("countyPolygonMap")), 
-                        tabPanel("State Level", leafletOutput("statePolygonMap"))
+                        tabPanel("County Level", plotlyOutput("countyPolygonMap"), 
+                                 verbatimTextOutput("casesBrush"),
+                                 htmlOutput("casesMotionChart"), 
+                                 verbatimTextOutput("deathBrush"),
+                                 htmlOutput("deathMotionChart")),
+                        tabPanel("State Level", leafletOutput("statePolygonMap")),
+                        tags$div(
+                            tags$p(
+                                "JHU.edu Copyright © 2020 by Johns Hopkins University & Medicine. All rights reserved."
+                            ),
+                            tags$p(
+                                tags$a(href="https://it.johnshopkins.edu/policies/privacystatement",
+                                       "JHU Information Technology Privacy Statement for Websites and Mobile Applications")
+                            )
+                        )
             )
         )
-)))
-
+    )
+)
