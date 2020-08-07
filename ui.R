@@ -31,10 +31,8 @@ ui <- fluidPage(
         
         mainPanel(
             tabsetPanel(type = "tabs", 
-                        tabPanel("County Level", plotlyOutput("countyPolygonMap"), 
-                                 verbatimTextOutput("casesBrush"),
-                                 htmlOutput("casesMotionChart"), 
-                                 verbatimTextOutput("deathBrush"),
+                        tabPanel("County Level", plotlyOutput("countyPolygonMap"),
+                                 htmlOutput("casesMotionChart"),
                                  htmlOutput("deathMotionChart")),
                         tabPanel("State Level", leafletOutput("statePolygonMap")),
                         tags$div(

@@ -62,82 +62,82 @@ server <- function(input, output, session) {
     names(totalDeath) <- c("countyNames", "totalDeath")
     destroyX(covidDeath)
     
-    gvisDeathData <- cbind.data.frame(covidDeath[,c(11:ncol(covidDeath))])
-    gvisDeathData <- melt(data = setDT(gvisDeathData), id.vars = c("countyNames"),measure.vars = c(colnames(covidDeath)[c(12:ncol(covidDeath))]))
-    colnames(gvisDeathData)[2:3] <- c("Date", "numCases")
+    gvisDeathData <- cbind.data.frame(covidDeath[,c(11, 13:ncol(covidDeath))])
+    gvisDeathData <- melt(data = setDT(gvisDeathData), id.vars = c("countyNames"),measure.vars = c(colnames(covidDeath)[c(13:ncol(covidDeath))]))
+    colnames(gvisDeathData)[2:3] <- c("Date", "numDeath")
     gvisDeathData$Date <- mdy(gvisDeathData$Date)
     
-    
-    v <- reactiveValues(data = totalComfirmed)
+    observeEvent(input$submit, {
+        req(input$submit)  
+
     observeEvent(input$countyFill, {
         if (input$countyFill == "Map by total confirmed") {
-            v$data <-  totalComfirmed$cases;
-            v$label <- totalComfirmed$countyNames;
-            v$zmin = 100;
-            v$zmax = 12000;
-            v$hover <- with(covidCases, paste(countyNames));
-            v$source <- "casesMap"
+            output$countyPolygonMap <- renderPlotly({
+                countyPolygonMap <- plot_ly(source = "casesMap") %>% add_trace(
+                    countyName <- covidCases$countyNames,
+                    type="choroplethmapbox",
+                    geojson=countyGeo,
+                    locations=fips,
+                    z=totalComfirmed$cases,
+                    colorscale="Viridis",
+                    zmin= 100,
+                    zmax= 12000,
+                    text = ~with(covidCases, paste(countyNames)),
+                    marker=list(line=list(width=0),opacity=0.5),
+                    customdata =~totalComfirmed$countyNames
+                ) %>% layout(
+                    mapbox=list(
+                        style="carto-positron",
+                        zoom =2,
+                        center=list(lon= -95.71, lat=37.09))
+                    %>% event_register(event = "plotly_selected")
+                );
+                countyPolygonMap;
+                ## generating the interactive plotly map
+            })
+            output$casesMotionChart <- renderGvis({
+                selected <- event_data(event = "plotly_selected", source = "casesMap")$customdata
+                gvisCasesDataSubset <- subset(gvisCasesData, countyNames %in% c(selected))
+                motionChart <- gvisMotionChart(gvisCasesDataSubset, "countyNames", "Date", options=list(width="automatic", height="automatic"))
+            })
         }
         if (input$countyFill == "Map by total death") {
-            v$data <-  totalDeath;
-            v$label <- totalDeath$countyNames;
-            v$zmin = 0;
-            v$zmax = 1600;
-            v$hover <- with(covidDeath, paste(countyNames));
-            v$source <- "deathMap"
+            output$countyPolygonMap <- renderPlotly({
+                countyPolygonMap <- plot_ly(source = "deathMap") %>% add_trace(
+                    countyName <- covidDeath$countyNames,
+                    type="choroplethmapbox",
+                    geojson=countyGeo,
+                    locations=fips,
+                    z=totalDeath$totalDeath,
+                    colorscale="Viridis",
+                    zmin= 0,
+                    zmax= 1600,
+                    text = ~with(covidDeath, paste(countyNames)),
+                    marker=list(line=list(width=0),opacity=0.5),
+                    customdata =~totalDeath$countyNames
+                ) %>% layout(
+                    mapbox=list(
+                        style="carto-positron",
+                        zoom =2,
+                        center=list(lon= -95.71, lat=37.09))
+                    %>% event_register(event = "plotly_selected")
+                );
+                countyPolygonMap;
+                ## generating the interactive plotly map
+            })
+            output$deathMotionChart <- renderGvis({
+                selected <- event_data(event = "plotly_selected", source = "deathMap")$customdata
+                gvisDeathDataSubset <- subset(gvisDeathData, countyNames %in% c(selected))
+                motionChart <- gvisMotionChart(gvisDeathDataSubset, "countyNames", "Date", options=list(width="automatic", height="automatic"))
+            })
         }
     })
-    
-    observeEvent(input$submit, {
-        req(input$submit)
+
         
-        output$countyPolygonMap <- renderPlotly({
-            countyPolygonMap <- plot_ly(source = v$source) 
-            %>% add_trace(
-                countyName <- covidCases$countyNames,
-                type="choroplethmapbox",
-                geojson=countyGeo,
-                locations=fips,
-                z=v$data,
-                colorscale="Viridis",
-                zmin= v$zmin,
-                zmax= v$zmax,
-                text = ~v$hover,
-                marker=list(line=list(width=0),opacity=0.5),
-                customdata =~v$label)
-            %>% layout(
-                mapbox=list(
-                    style="carto-positron",
-                    zoom =2,
-                    center=list(lon= -95.71, lat=37.09))
-            %>% event_register(event = "plotly_selected")
-            );
-            countyPolygonMap;
-        })
-        
-        output$casesBrush <- renderText({
-            selected <- event_data(event = "plotly_selected", source = "casesMap")$customdata
-            brush <- as.list(selected)
-        })
-        output$casesMotionChart <- renderGvis({
-            selected <- event_data(event = "plotly_selected", source = "casesMap")$customdata
-            gvisCasesDataSubset <- subset(gvisCasesData, countyNames %in% c(selected))
-            motionChart <- gvisMotionChart(gvisCasesDataSubset, "countyNames", "Date", options=list(width=800, height=400))
-        })
-        
-        output$deathBrush <- renderText({
-            selected <- event_data(event = "plotly_selected", source = "deathMap")$customdata
-            brush <- as.list(selected)
-        })
-        output$deathMotionChart <- renderGvis({
-            selected <- event_data(event = "plotly_selected", source = "deathMap")$customdata
-            gvisDeathDataSubset <- subset(gvisDeathData, countyNames %in% c(selected))
-            motionChart <- gvisMotionChart(gvisDeathDataSubset, "countyNames", "Date", options=list(width=800, height=400))
-        })
         
         
         output$statePolygonMap <-renderLeaflet ({
-            statesAbbr <- subset(statePolygonData, input$statesInput %in% statePolygonData$STUSPS);
+            statesAbbr <- subset(statePolygonData, statePolygonData$STUSPS %in% input$statesInput);
             ## subsetting the shape file with the selected states
             
             leaflet(statesAbbr) %>%
